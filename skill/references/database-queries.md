@@ -69,7 +69,7 @@ Additionally include Key Outputs (significant files created, modified, or propos
 
 Context monitoring follows the three-threshold model:
 - **>50%:** Estimate context cost before every file read. No speculative reads. Log estimates to status file.
-- **65%:** Prepare handoff: write HANDOFF doc, finish current step only, no new work steps. Send a context warning message including current context %, self-correction status, remaining agent estimates, how many agents fit in remaining budget, and deviation count.
+- **65%:** Prepare handoff: write HANDOFF doc, finish current step only, no new work steps. Set `last_error = 'context_exhaustion_warning'` (exact string — the conductor routes on this value). Send a context warning message including current context %, self-correction status, remaining agent estimates, how many agents fit in remaining budget, and deviation count.
 - **75%:** Mandatory exit. Stop all work immediately. Complete HANDOFF, set state to `exited` (clean handoff, not `error`).
 
 At 65%, the musician prepares for exit but may still complete the current step. At 75%, the musician stops immediately and transitions to `exited` state via the clean exit protocol (query 10).

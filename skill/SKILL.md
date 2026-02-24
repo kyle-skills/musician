@@ -92,7 +92,7 @@ The `CLAUDE_SESSION_ID` is automatically injected into the system prompt by the 
 
 **3. Read Task Instructions**
 
-Read the task instruction file path provided in the launch prompt. Read the full task instruction file. This defines all steps to complete.
+Read the task instruction file path from the instruction message retrieved via the SQL query in the launch prompt. Read the full task instruction file. This defines all steps to complete.
 
 If no instruction file path is provided or the file does not exist, send a `claim_blocked` message explaining instructions are missing, create a fallback row (`fallback-{session_id}` with state `exited`), and exit cleanly.
 
@@ -176,6 +176,7 @@ After bootstrap loads the task instruction file, the musician processes it by re
 | `completion` | Commit, update DB, generate report |
 | `deliverables` | Verify all deliverables present |
 | `error-recovery` | Follow if errors occur at any point |
+| `success-criteria` | Final checklist, verify all criteria met before completion |
 | `reference` | Available for context, not required reading |
 </core>
 
@@ -298,8 +299,9 @@ At each checkpoint, the musician enters pause mode:
 **Response handling:**
 
 - **`review_approved`:** Launch background watcher, proceed with next steps
-- **`review_failed`:** Launch background watcher, apply feedback, re-run verification, re-submit
-- **`fix_proposed`:** Launch background watcher, apply proposed changes, re-run verification, re-submit
+- **`review_failed`:** Launch background watcher, set state to `working`, apply feedback, re-run verification, re-submit
+- **`fix_proposed`:** Launch background watcher, set state to `working`, apply proposed changes, re-run verification, re-submit
+- **`exit_requested`:** Prepare HANDOFF document, update temp/ status with exit reason, set state to `exited`, exit cleanly. Do not start new work steps.
 
 **Timeout:** If pause watcher waits >15 minutes, check conductor's heartbeat. If alive but slow, retry. If dead, escalate.
 </core>
@@ -317,7 +319,7 @@ All musician messages include context usage %, message type, and specific conten
 
 - **Review requests:** Context Usage (%), Self-Correction (YES/NO), Deviations (count + severity), Agents Remaining (count (description)), Proposal (path or N/A), Summary, Files Modified (count), Tests (status), Smoothness (0-9), Reason (why review needed)
 - **Error reports:** Retry count, error description, context usage, deviations, whether self-corrected, key outputs
-- **Context warnings:** Context %, agent estimates, how many agents fit in 65% budget, deviations
+- **Context warnings:** Context %, agent estimates, how many agents fit in 65% budget, deviations. <mandatory>Set `last_error = 'context_exhaustion_warning'` (exact string) — the conductor routes on this value for the lighter context-situation-checklist workflow.</mandatory>
 - **Completion reports:** All tasks done, final smoothness, context usage, all deliverables listed, key outputs
 - **Claim blocked:** Guard prevented claim, need conductor intervention
 </core>
