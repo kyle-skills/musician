@@ -250,7 +250,7 @@ Context monitoring is non-negotiable. Check context usage on every system messag
 |-----------|--------|
 | **Always** | Check context usage on every system message response. Log to `temp/task-XX-status`. |
 | **>50%** | Estimate context cost before every file read. Include estimate in status log. No speculative reads. |
-| **65%** | Prepare handoff: write HANDOFF doc, update temp/ status, finish current step only, no new work steps. |
+| **65%** | Set `state = 'error'` and `last_error = 'context_exhaustion_warning'`. Send context warning message with `message_type = 'context_warning'`. Prepare handoff: write HANDOFF doc, update temp/ status, finish current step only, no new work steps. |
 | **75%** | Mandatory exit. Stop all work immediately. Complete HANDOFF, set state to `exited`. |
 
 80% is NOT "20% remaining" — it is the danger zone for logic poisoning. Hallucinations increase, instruction adherence drops, and partial work is worse than no work. Sessions are cheap to restart; context exhaustion can lock up an entire project.
@@ -299,7 +299,7 @@ At each checkpoint, the musician enters pause mode:
 **Response handling:**
 
 - **`review_approved`:** Launch background watcher, proceed with next steps
-- **`review_failed`:** Launch background watcher, set state to `working`, apply feedback, re-run verification, re-submit
+- **`review_failed`:** Read conductor feedback. If feedback directs handoff (context exhaustion, stop work): prepare HANDOFF, set state to `exited`, exit cleanly. Otherwise: launch background watcher, set state to `working`, apply feedback, re-run verification, re-submit
 - **`fix_proposed`:** Launch background watcher, set state to `working`, apply proposed changes, re-run verification, re-submit
 - **`exit_requested`:** Prepare HANDOFF document, update temp/ status with exit reason, set state to `exited`, exit cleanly. Do not start new work steps.
 
@@ -319,7 +319,7 @@ All musician messages include context usage %, message type, and specific conten
 
 - **Review requests:** Context Usage (%), Self-Correction (YES/NO), Deviations (count + severity), Agents Remaining (count (description)), Proposal (path or N/A), Summary, Files Modified (count), Tests (status), Smoothness (0-9), Reason (why review needed)
 - **Error reports:** Retry count, error description, context usage, deviations, whether self-corrected, key outputs
-- **Context warnings:** Context %, agent estimates, how many agents fit in 65% budget, deviations. <mandatory>Set `last_error = 'context_exhaustion_warning'` (exact string) — the conductor routes on this value for the lighter context-situation-checklist workflow.</mandatory>
+- **Context warnings:** Context %, agent estimates, how many agents fit in 65% budget, deviations. <mandatory>Set `state = 'error'`, `last_error = 'context_exhaustion_warning'` (exact string), and `message_type = 'context_warning'`. The conductor detects context warnings via `state = 'error' AND last_error = 'context_exhaustion_warning'` and routes to the lighter context-situation-checklist workflow.</mandatory>
 - **Completion reports:** All tasks done, final smoothness, context usage, all deliverables listed, key outputs
 - **Claim blocked:** Guard prevented claim, need conductor intervention
 </core>
