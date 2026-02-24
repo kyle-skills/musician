@@ -187,7 +187,7 @@ The musician is partially aware of parallel sibling musicians but operates indep
 
 **No Proactive Pings:**
 
-The musician does NOT send status updates or progress pings mid-work. The conductor monitors passively via heartbeat queries and reading temp/ files via subagent.
+The musician does NOT send status updates or progress pings mid-work. The conductor actively monitors progress by reading `temp/task-XX-status` via subagent. Keep this file current — log step starts, agent launches/returns, and checkpoint events so the conductor has real-time visibility.
 </core>
 
 <core>
@@ -343,10 +343,17 @@ All paths project-root-relative. Each entry annotated: `(created)`, `(modified)`
 Maintain three task-specific files in `temp/`:
 
 **`task-XX-status`:**
-- Running log of execution steps with context % markers
-- Format: "step N completed [ctx: XX%]"
-- Read by conductor via subagent to monitor progress
-- Updated at major milestones only (not after every line)
+- Running log of execution progress with context % markers
+- Read by conductor via subagent to actively monitor musician progress
+- Append-only, one line per event. Format: `event description [ctx: XX%]`
+- Entry types:
+  - Bootstrap: `bootstrap started`, `task claimed`, `instructions loaded`
+  - Execution: `step N started`, `step N completed`
+  - Delegation: `step N agent M launched`, `step N agent M returned`
+  - Checkpoints: `checkpoint N reached`, `checkpoint N approved`
+  - Context: `context at 52%, estimating reads`, `context at 65%, preparing handoff`
+  - Exit: `clean exit preparing`, `HANDOFF written`
+- Log at every step boundary, agent launch/return, and checkpoint — not just completions
 
 **`task-XX-deviations`:**
 - Line: "Low: " → informational, minor issue
