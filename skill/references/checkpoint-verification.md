@@ -35,18 +35,7 @@ tier: 3
 <mandatory>
 ## Context Monitoring Thresholds
 
-Context monitoring is non-negotiable. Check context usage on every system message response.
-
-| Threshold | Action |
-|-----------|--------|
-| **Always** | Check context usage on every system message response. Log to `temp/task-XX-status`. |
-| **>50%** | Estimate context cost before every file read. Include estimate in status log. No speculative reads. |
-| **65%** | Prepare handoff: write HANDOFF doc, update temp/ status, finish current step only, no new work steps. |
-| **75%** | Mandatory exit. Stop all work immediately. Complete HANDOFF, set state to `exited`. |
-
-80% is NOT "20% remaining" — it is the danger zone for logic poisoning. Hallucinations increase, instruction adherence drops, and partial work is worse than no work. Sessions are cheap to restart; context exhaustion can lock up an entire project.
-
-If both a context threshold and a task instruction checkpoint trigger simultaneously, context check takes priority. Context exhaustion leads to `exited` state (clean handoff), not `error`.
+Context thresholds (Always, >50%, 65%, 75%) are defined in the main SKILL.md context-monitoring section. At checkpoints, the additional rule is: context exhaustion leads to `exited` state (clean handoff), not `error`. If both a context threshold and a task instruction checkpoint trigger simultaneously, context check takes priority.
 </mandatory>
 </section>
 

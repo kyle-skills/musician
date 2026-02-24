@@ -63,7 +63,7 @@ fix_proposed → needs_review     (re-submit after applying proposed fix)
 exit_requested → exited         (TERMINAL: clean handoff on conductor request)
 working → complete              (TERMINAL: after conductor approves)
 working → exited                (TERMINAL: clean handoff for context exhaustion)
-error → exited                  (TERMINAL: unrecoverable failure)
+error → exited                  (TERMINAL: retry exhaustion after 5 failed retries)
 ```
 </core>
 </section>

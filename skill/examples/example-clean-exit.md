@@ -168,13 +168,22 @@ This message:
 <core>
 ## Step 8: Set Terminal State (LAST STEP)
 
-The musician performs one final database operation to set the task state to `exited`:
+The musician performs two final database operations. Per terminal write atomicity rules, the message INSERT comes first, then the state UPDATE:
+
+```
+INSERT INTO orchestration_messages (task_id, from_session, message_type, content)
+VALUES ('task-03', '{session_id}', 'handoff', '{final message from Step 7}');
+```
+
+Then the state update:
 
 ```
 UPDATE orchestration_tasks
 SET state = 'exited', last_heartbeat = datetime('now')
 WHERE task_id = 'task-03';
 ```
+
+The message serves as a recovery record if the state update fails.
 </core>
 
 <mandatory>

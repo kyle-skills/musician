@@ -66,7 +66,7 @@ If a new message is detected, the watcher immediately exits. The musician detect
 <core>
 ## Pause Watcher (During Conductor Wait)
 
-**When launched:** When the musician sets its state to `error` or `needs_review` and must wait for an conductor response. Use `Task(subagent_type="general-purpose")` (foreground, NOT `run_in_background`).
+**When launched:** When the musician sets its state to `error` or `needs_review` and must wait for a conductor response. Use `Task(subagent_type="general-purpose")` (foreground, NOT `run_in_background`).
 
 **Runs:** In the foreground, blocking the musician from proceeding.
 

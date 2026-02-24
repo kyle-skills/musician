@@ -75,16 +75,7 @@ When a musician session starts, it executes these steps in order to initialize a
 <core>
 **1. Parse Task Identity**
 
-Extract the task ID from the initial prompt. The conductor embeds the task number in the musician's launch prompt (e.g., "Read task #3 from messages"). Convert to `task-03` format and record it.
-
-The musician is launched with a standardized prompt. Expected structure:
-
-- `/musician` skill invocation
-- Task ID and Phase info
-- Task instruction file path
-- SQL query for task claim and instruction retrieval
-
-Parse the task ID and instruction file path from the prompt.
+The conductor launches the musician with a standardized prompt containing: `/musician` skill invocation, task ID and phase info, task instruction file path, and SQL query for task claim and instruction retrieval. Extract the task ID (convert to `task-XX` format) and instruction file path from the prompt.
 
 **2. Session Identity**
 
@@ -164,6 +155,7 @@ After bootstrap loads the task instruction file, the musician processes it by re
 | Section ID | Musician action |
 |------------|----------------|
 | `mandatory-rules` | Read fully, internalize all rules before proceeding |
+| `danger-files` | Read shared resource rules, internalize coordination constraints before execution |
 | `objective` | Understand goal and success criteria |
 | `prerequisites` | Execute pre-flight checks, fail fast if any fail |
 | `bootstrap` | Execute claim SQL and monitoring setup from templates |
@@ -205,22 +197,7 @@ Delegation decision matrix, prompt structure, retry policy.
 
 **Delegation Model — Default to Delegation:**
 
-**Mode 1: Task() for one-shot work**
-- Single-file creation/modification
-- Isolated, self-contained work units
-- Agent can invoke skills (TDD, subagent-driven-development)
-- Musician reviews output thoroughly before integration
-
-**Mode 2: Teams for complex delegation**
-- Multi-step delegations that benefit from teammate coordination
-- Musician creates team, spawns named teammates
-- Teammates work independently with full skill access
-- Teammates report back via SendMessage
-- Musician reviews ALL teammate output before accepting
-
-**Threshold:** 30k+ tokens estimated context cost → delegate. Mode choice: simple (one step, one file) → Task(). Complex (multiple steps, own TDD cycle) → Teams.
-
-**Musician keeps:** Integration work, cross-file assembly, holistic testing, and anything requiring full session history.
+**Threshold:** 30k+ tokens estimated context cost → delegate. **Mode 1: Task()** for one-shot, single-file work. **Mode 2: Teams** for multi-step work needing teammate coordination. **Musician keeps:** integration, cross-file assembly, holistic testing, and anything requiring full session history. See reference for detailed mode descriptions and prompt structure.
 </core>
 
 <mandatory>

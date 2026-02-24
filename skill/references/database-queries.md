@@ -50,7 +50,7 @@ At each step boundary in task execution, update the task row's `last_heartbeat` 
 
 **5. Review Request (Checkpoint)**
 
-When reaching a checkpoint and verification tests pass, update the task state to `needs_review` and send a message to the conductor. The message contains all 10 standard review fields:
+When reaching a checkpoint and verification tests pass, update the task state to `needs_review` and send a message to the conductor. The message contains all 11 standard review fields:
 
 1. **Context Usage** (%) — Current context window consumption
 2. **Self-Correction** (YES/NO) — Whether self-correction occurred during this checkpoint
@@ -63,7 +63,7 @@ When reaching a checkpoint and verification tests pass, update the task state to
 9. **Smoothness** (0-9) — Smoothness score for execution quality
 10. **Reason** (why review needed) — Why this review checkpoint was triggered
 
-Additionally include Key Outputs (significant files created, modified, or proposed for RAG addition).
+11. **Key Outputs** — Significant files created, modified, or proposed for RAG addition (project-root-relative paths, annotated with `(created)`, `(modified)`, or `(rag-addition)`)
 
 **6. Context Warning & Handoff**
 
@@ -77,7 +77,7 @@ At 65%, the musician prepares for exit but may still complete the current step. 
 **7. Error Report (Failure State)**
 
 When an unrecoverable error occurs, update state to `error`, increment retry count, and set `last_error` to the error description. Send a message including:
-- Retry attempt number (out of 5 conductor-level retries — distinct from the 2-retry subagent limit)
+- Retry attempt number (out of 5 total retries — musician increments, conductor monitors the count; distinct from the 2-retry subagent limit)
 - Current context usage
 - Whether self-correction occurred
 - Error description
