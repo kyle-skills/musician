@@ -294,7 +294,7 @@ Atomic claim, review requests, error reports, completion report SQL templates.
 <core>
 All musician messages include context usage %, message type, and specific content:
 
-- **Review requests:** Context Usage (%), Self-Correction (YES/NO), Deviations (count + severity), Agents Remaining (count (description)), Proposal (path or N/A), Summary, Files Modified (count), Tests (status), Smoothness (0-9), Reason (why review needed)
+- **Review requests:** Context Usage (%), Self-Correction (YES/NO), Deviations (count + severity), Agents Remaining (count (~X% each, ~Y% total)), Proposal (path or N/A), Summary, Files Modified (count), Tests (status), Smoothness (0-9), Reason (why review needed)
 - **Error reports:** Retry count, error description, context usage, deviations, whether self-corrected, key outputs
 - **Context warnings:** Context %, agent estimates, how many agents fit in 65% budget, deviations. <mandatory>Set `state = 'error'`, `last_error = 'context_exhaustion_warning'` (exact string), and `message_type = 'context_warning'`. The conductor detects context warnings via `state = 'error' AND last_error = 'context_exhaustion_warning'` and routes to the lighter context-situation-checklist workflow.</mandatory>
 - **Completion reports:** All tasks done, final smoothness, context usage, all deliverables listed, key outputs

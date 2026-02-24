@@ -55,7 +55,7 @@ When reaching a checkpoint and verification tests pass, update the task state to
 1. **Context Usage** (%) — Current context window consumption
 2. **Self-Correction** (YES/NO) — Whether self-correction occurred during this checkpoint
 3. **Deviations** (count + severity) — Count and maximum severity of logged deviations
-4. **Agents Remaining** (count (description)) — Estimate of remaining agents needed and their typical cost
+4. **Agents Remaining** (count (~X% each, ~Y% total)) — Remaining agents needed and their estimated context cost as percentages
 5. **Proposal** (path or N/A) — Path to any proposals created, or N/A if none
 6. **Summary** — Summary of work accomplished at this checkpoint
 7. **Files Modified** (count) — Number of files created or modified
