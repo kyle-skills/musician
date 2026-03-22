@@ -1,0 +1,13 @@
+{
+  "name": "musician",
+  "description": "Autonomous task execution for Claude Code orchestration",
+  "version": "1.0.0",
+  "author": {
+    "name": "The Elevated Stage",
+    "url": "https://github.com/The-Elevated-Stage"
+  },
+  "homepage": "https://github.com/The-Elevated-Stage/musician",
+  "repository": "https://github.com/The-Elevated-Stage/musician.git",
+  "license": "MIT",
+  "keywords": ["orchestration", "execution", "autonomous", "elevated-stage"]
+}

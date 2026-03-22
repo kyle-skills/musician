@@ -171,12 +171,12 @@ Run before committing changes to the Musician skill:
 
 | Script | Purpose |
 |---|---|
-| `skill/scripts/validate-musician-state.sh` | Database state consistency for active tasks |
-| `skill/scripts/check-context-headroom.sh` | Context budget estimation |
-| `skill/scripts/verify-temp-files.sh` | Temp file path validation |
+| `skills/musician/scripts/validate-musician-state.sh` | Database state consistency for active tasks |
+| `skills/musician/scripts/check-context-headroom.sh` | Context budget estimation |
+| `skills/musician/scripts/verify-temp-files.sh` | Temp file path validation |
 
 ```bash
-bash skill/scripts/validate-musician-state.sh
+bash skills/musician/scripts/validate-musician-state.sh
 ```
 
 ## Project Structure
